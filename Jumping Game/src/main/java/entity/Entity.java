@@ -1,0 +1,46 @@
+package entity;
+
+
+import javafx.scene.image.Image;
+
+public class Entity {
+
+
+    private Image image; //= new Image("mario.png");
+
+    private double positionX;
+    private double positionY;
+
+    public Entity(Image image, double positionX, double positionY) {
+        this.image = image;
+        this.positionX = positionX;
+        this.positionY = positionY;
+    };
+
+    public Image getImage() {
+        return image;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
+    }
+
+
+    public double getPositionX() {
+        return positionX;
+    }
+
+    public void setPositionX(double positionX) {
+        this.positionX = positionX;
+    }
+
+    public double getPositionY() {
+        return positionY;
+    }
+
+    public void setPositionY(double positionY) {
+        this.positionY = positionY;
+    }
+
+
+}
