@@ -2,6 +2,7 @@ package entity;
 
 
 import javafx.scene.image.Image;
+import javafx.scene.shape.Rectangle;
 
 public class Entity {
 
@@ -42,5 +43,7 @@ public class Entity {
         this.positionY = positionY;
     }
 
-
+    public Rectangle rect(){
+        return new Rectangle(image.getWidth(), image.getHeight());
+    }
 }
