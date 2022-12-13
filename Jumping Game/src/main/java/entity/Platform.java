@@ -46,6 +46,6 @@ public class Platform {
     }
 
     public Rectangle rect() {
-        return new Rectangle(image.getWidth(), image.getHeight());
+        return new Rectangle(positionX, positionY, image.getWidth(), image.getHeight());
     }
 }

@@ -43,7 +43,7 @@ public class Entity {
         this.positionY = positionY;
     }
 
-    public Rectangle rect(){
-        return new Rectangle(image.getWidth(), image.getHeight());
+    public Rectangle rect() {
+        return new Rectangle(positionX, positionY, image.getWidth(), image.getHeight());
     }
 }
