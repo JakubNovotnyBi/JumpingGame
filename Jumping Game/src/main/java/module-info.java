@@ -1,8 +1,8 @@
-module com.example.pong {
+module com.example {
     requires javafx.controls;
     requires javafx.fxml;
 
 
-    opens com.example.pong to javafx.fxml;
-    exports com.example.pong;
+    opens com.example to javafx.fxml;
+    exports com.example;
 }

@@ -1,6 +1,5 @@
-package com.example.pong;
+package com.example;
 
-import entity.Background;
 import entity.Entity;
 import entity.Platform;
 import javafx.animation.KeyFrame;
@@ -17,6 +16,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -34,6 +34,7 @@ public class HelloApplication extends Application {
     private boolean inAir = false;
 
     private double speed = 30;
+    private double vSpeed = 0;
 
     public Rectangle rectangle;
     Image mario = new Image("mario.png");
@@ -42,12 +43,8 @@ public class HelloApplication extends Application {
     Image backgroundImage = new Image("background.png");
     Image backgroundImage2 = new Image("background2.png");
     Image bgImage = backgroundImage2;
-    Image transparentPlatform = new Image("transparentPlatform.png", 800, 50, false, false);
 
     Entity player = new Entity(mario, 0, height - mario.getHeight() - 190);
-    Platform platform = new Platform(tableLand, 150, 450);
-    Platform platform2 = new Platform(tableLand, 300, 300);
-    Platform base = new Platform(transparentPlatform, 0, height-190);
 
     ArrayList<Platform> platforms = new ArrayList<>();
 
@@ -67,55 +64,49 @@ public class HelloApplication extends Application {
         //canvas.setOnMouseMoved(e -> playerOneYPos = e.getY());
         canvas.setOnMouseClicked(e -> gameStarted = true);
 
-        platforms.add(platform);
-        platforms.add(platform2);
-        platforms.add(base);
-
+        platforms.add(new Platform(tableLand, 150, 450));
+        platforms.add(new Platform(tableLand, 300, 300));
+        platforms.add(new Platform(new Image("transparentPlatform.png", 800, 50, false, false), 0, height - 190));
 
 
         Scene scene = new Scene(new StackPane(canvas));
 
         scene.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
 
-            if (keyEvent.getCode() == KeyCode.A){
-                if (player.getPositionX() - speed >= 5 ){
+            if (keyEvent.getCode() == KeyCode.A) {
+                if (player.getPositionX() - speed >= 5) {
                     player.setImage(marioR);
                     player.setPositionX(player.getPositionX() - speed);
-                    if (collisionTest(player,platforms)){
+                    if (collisionTest(player, platforms)) {
                         player.setPositionX(player.getPositionX() + speed);
                     }
 
-                }
-                else{
+                } else {
                     bgImage = backgroundImage2;
                 }
-            }
-
-            else if (keyEvent.getCode() == KeyCode.D){
-                if (player.getPositionX()+player.getImage().getWidth() + speed <= width ){
+            } else if (keyEvent.getCode() == KeyCode.D) {
+                if (player.getPositionX() + player.getImage().getWidth() + speed <= width) {
                     player.setImage(mario);
                     player.setPositionX(player.getPositionX() + speed);
-                    if (collisionTest(player,platforms)){
+                    if (collisionTest(player, platforms)) {
                         player.setPositionX(player.getPositionX() - speed);
                     }
-                }
-                else {
+                } else {
                     bgImage = backgroundImage;
 
                 }
-            }
-
-            else if (keyEvent.getCode() == KeyCode.W){
+            } else if (keyEvent.getCode() == KeyCode.W) {
                 inAir = true;
+                vSpeed = -30;
 
-                if(player.getPositionY() - speed >= 0 ){
-                    player.setPositionY(player.getPositionY() - speed);
-                    if (collisionTest(player,platforms)){
-                        player.setPositionY(player.getPositionY() + speed);
+                if (player.getPositionY() + vSpeed >= 0) {
+                    player.setPositionY(player.getPositionY() + vSpeed);
+                    if (collisionTest(player, platforms)) {
+                        player.setPositionY(player.getPositionY() - vSpeed);
                     }
                 }
             }
-
+/* just let him fall, no moving through cursor keys
             else if (keyEvent.getCode() == KeyCode.S){
 
                 if (player.getPositionY() + player.getImage().getHeight() + speed <= height - 190 ){
@@ -128,15 +119,16 @@ public class HelloApplication extends Application {
                     inAir = false;
                 }
             }
+        */
         });
 
-            stage.setScene(scene);
-            stage.show();
-            tl.play();
+        stage.setScene(scene);
+        stage.show();
+        tl.play();
 
     }
 
-    private boolean collisionTest(Entity target, ArrayList<Platform> platforms){
+    private boolean collisionTest(Entity target, ArrayList<Platform> platforms) {
         for (Platform platform : platforms)
             if (target.rect().getBoundsInParent().intersects(platform.rect().getBoundsInParent()))
                 return true;
@@ -151,27 +143,27 @@ public class HelloApplication extends Application {
         gc.fillRect(0, 0, width, height);
 
         //Background rendering
-        gc.drawImage(bgImage,0,0, width, height);
+        gc.drawImage(bgImage, 0, 0, width, height);
         gc.setFill(Color.WHITE);
 
-
-            player.setPositionY(player.getPositionY()+2);
-            if (collisionTest(player, platforms)){
-                player.setPositionY(player.getPositionY()-2);
-                inAir = false;
-            }
-            else{
-                inAir = true;
-            }
+        vSpeed += 2;
+        player.setPositionY(player.getPositionY() + vSpeed);
+        if (collisionTest(player, platforms)) {
+            player.setPositionY(player.getPositionY() - vSpeed);
+            inAir = false;
+            vSpeed = 0;
+        } else {
+            inAir = true;
+        }
 
 
         //Player rendering
-        gc.drawImage(player.getImage(), player.getPositionX(), player.getPositionY(), player.getImage().getWidth(),player.getImage().getHeight());
+        gc.drawImage(player.getImage(), player.getPositionX(), player.getPositionY(), player.getImage().getWidth(), player.getImage().getHeight());
 
         //Platform rendering
-        gc.drawImage(platform.getImage(), platform.getPositionX(), platform.getPositionY());
-        gc.drawImage(platform2.getImage(), platform2.getPositionX(), platform2.getPositionY());
-
+        for (Platform platform : platforms) {
+            gc.drawImage(platform.getImage(), platform.getPositionX(), platform.getPositionY());
+        }
 
     }
 
