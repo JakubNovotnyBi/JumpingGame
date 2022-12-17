@@ -33,7 +33,7 @@ public class HelloApplication extends Application {
 
     private boolean inAir = false;
 
-    private double speed = 30;
+    private double speed = 20;
     private double vSpeed = 0;
 
     public Rectangle rectangle;
@@ -58,7 +58,7 @@ public class HelloApplication extends Application {
         canvas.requestFocus();
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        Timeline tl = new Timeline(new KeyFrame(Duration.millis(100), e -> run1(gc)));
+        Timeline tl = new Timeline(new KeyFrame(Duration.millis(10), e -> run1(gc)));
         tl.setCycleCount(Timeline.INDEFINITE);
 
         //canvas.setOnMouseMoved(e -> playerOneYPos = e.getY());
@@ -72,6 +72,7 @@ public class HelloApplication extends Application {
         Scene scene = new Scene(new StackPane(canvas));
 
         scene.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
+            //System.out.println(keyEvent.getCode().getCode());
 
             if (keyEvent.getCode() == KeyCode.A) {
                 if (player.getPositionX() - speed >= 5) {
@@ -124,6 +125,7 @@ public class HelloApplication extends Application {
 
         stage.setScene(scene);
         stage.show();
+        stage.getIcons().add(new Image("icon.png"));
         tl.play();
 
     }
