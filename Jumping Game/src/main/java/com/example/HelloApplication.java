@@ -36,13 +36,15 @@ public class HelloApplication extends Application {
     private double speed = 20;
     private double vSpeed = 0;
 
+    private int background = 0;
+
     public Rectangle rectangle;
     Image mario = new Image("mario.png");
     Image marioR = new Image("marioR.png");
     Image tableLand = new Image("platform.png");
     Image backgroundImage = new Image("background.png");
     Image backgroundImage2 = new Image("background2.png");
-    Image bgImage = backgroundImage2;
+    Image bgImage = backgroundImage;
 
     Entity player = new Entity(mario, 0, height - mario.getHeight() - 190);
 
@@ -75,26 +77,33 @@ public class HelloApplication extends Application {
             //System.out.println(keyEvent.getCode().getCode());
 
             if (keyEvent.getCode() == KeyCode.A) {
+                player.setImage(marioR);
                 if (player.getPositionX() - speed >= 5) {
-                    player.setImage(marioR);
                     player.setPositionX(player.getPositionX() - speed);
                     if (collisionTest(player, platforms)) {
                         player.setPositionX(player.getPositionX() + speed);
                     }
 
                 } else {
-                    bgImage = backgroundImage2;
+                    if (background == 1) {
+                        player.setPositionX(width - player.getImage().getWidth());
+                        bgImage = backgroundImage;
+                        background = 0;
+                    }
                 }
             } else if (keyEvent.getCode() == KeyCode.D) {
+                player.setImage(mario);
                 if (player.getPositionX() + player.getImage().getWidth() + speed <= width) {
-                    player.setImage(mario);
                     player.setPositionX(player.getPositionX() + speed);
                     if (collisionTest(player, platforms)) {
                         player.setPositionX(player.getPositionX() - speed);
                     }
-                } else {
-                    bgImage = backgroundImage;
-
+                } else{
+                    if (background==0){
+                    player.setPositionX(0);
+                    bgImage = backgroundImage2;
+                    background = 1;
+                    }
                 }
             } else if (keyEvent.getCode() == KeyCode.W) {
                 inAir = true;
