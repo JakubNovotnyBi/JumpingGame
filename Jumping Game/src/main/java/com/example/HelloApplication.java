@@ -37,10 +37,13 @@ public class HelloApplication extends Application {
     private double vSpeed = 0;
 
     private int background = 0;
+    private boolean moveStage = false;
 
     public Rectangle rectangle;
     Image mario = new Image("mario.png");
-    Image marioR = new Image("marioR.png");
+    Image marioL = new Image("marioL.png");
+    Image marioM = new Image("marioM.png");
+    Image marioM2 = new Image("marioM2.png");
     Image tableLand = new Image("platform.png");
     Image backgroundImage = new Image("background.png");
     Image backgroundImage2 = new Image("background2.png");
@@ -77,8 +80,17 @@ public class HelloApplication extends Application {
             //System.out.println(keyEvent.getCode().getCode());
 
             if (keyEvent.getCode() == KeyCode.A) {
-                player.setImage(marioR);
+                player.setImage(marioL);
                 if (player.getPositionX() - speed >= 5) {
+                    if (!moveStage){
+                        player.setImage(marioM2);
+                        moveStage= true;
+                    }
+                    else{
+                        player.setImage(marioL);
+                        moveStage = false;
+                    }
+
                     player.setPositionX(player.getPositionX() - speed);
                     if (collisionTest(player, platforms)) {
                         player.setPositionX(player.getPositionX() + speed);
@@ -94,6 +106,14 @@ public class HelloApplication extends Application {
             } else if (keyEvent.getCode() == KeyCode.D) {
                 player.setImage(mario);
                 if (player.getPositionX() + player.getImage().getWidth() + speed <= width) {
+                    if (!moveStage){
+                        player.setImage(marioM);
+                        moveStage= true;
+                    }
+                    else{
+                        player.setImage(mario);
+                        moveStage = false;
+                    }
                     player.setPositionX(player.getPositionX() + speed);
                     if (collisionTest(player, platforms)) {
                         player.setPositionX(player.getPositionX() - speed);
