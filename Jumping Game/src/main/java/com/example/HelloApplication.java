@@ -20,9 +20,10 @@ import javafx.util.Duration;
 import java.io.IOException;
 import java.util.ArrayList;
 
-// TODO: 13.12.2022 ideas: moving platform, moving into another screen (new background ?)
-// TODO: 13.12.2022 need to add: gravity, fall speed
-// TODO: 13.12.2022 need to fix: continuity(FPS),
+// TODO: ideas: moving platform,
+// TODO: need to add: gravity, fall speed, killing enemy,
+// TODO: need to fix: continuity(FPS), moving into another map, jump animation, all collision collision
+
 
 
 public class HelloApplication extends Application {
@@ -32,6 +33,8 @@ public class HelloApplication extends Application {
     private boolean gameStarted;
 
     private boolean inAir = false;
+
+    private boolean enemyMoving = false;
 
     private double speed = 20;
     private double vSpeed = 0;
@@ -44,12 +47,22 @@ public class HelloApplication extends Application {
     Image marioL = new Image("marioL.png");
     Image marioM = new Image("marioM.png");
     Image marioM2 = new Image("marioM2.png");
+
+    Image enemy = new Image("enemy.png");
+    Image enemyL = new Image("enemyL.png");
+    Image enemyR = new Image("enemyR.png");
+
     Image tableLand = new Image("platform.png");
+
+
+
     Image backgroundImage = new Image("background.png");
     Image backgroundImage2 = new Image("background2.png");
     Image bgImage = backgroundImage;
 
     Entity player = new Entity(mario, 0, height - mario.getHeight() - 190);
+
+    Entity enemyE = new Entity(enemy,300, height - enemy.getHeight() - 190);
 
     ArrayList<Platform> platforms = new ArrayList<>();
 
@@ -63,7 +76,7 @@ public class HelloApplication extends Application {
         canvas.requestFocus();
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        Timeline tl = new Timeline(new KeyFrame(Duration.millis(10), e -> run1(gc)));
+        Timeline tl = new Timeline(new KeyFrame(Duration.millis(50), e -> run1(gc)));
         tl.setCycleCount(Timeline.INDEFINITE);
 
         //canvas.setOnMouseMoved(e -> playerOneYPos = e.getY());
@@ -190,6 +203,31 @@ public class HelloApplication extends Application {
 
         //Player rendering
         gc.drawImage(player.getImage(), player.getPositionX(), player.getPositionY(), player.getImage().getWidth(), player.getImage().getHeight());
+        gc.drawImage(enemyE.getImage(), enemyE.getPositionX(), enemyE.getPositionY(), enemyE.getImage().getWidth(), enemyE.getImage().getHeight());
+
+        if (enemyMoving && enemyE.getPositionX() > 0){
+            if (enemyE.getImage() == enemyL) {
+                enemyE.setPositionX(enemyE.getPositionX() - 1);
+                enemyE.setImage(enemy);
+                enemyE.setImage(enemyR);
+
+            }
+            else{
+                enemyE.setImage(enemyL);
+            }
+        }
+        else{
+            enemyMoving = !enemyMoving;
+        }
+
+        if (player.rect().getBoundsInParent().intersects(enemyE.rect().getBoundsInParent())){
+            System.out.println(player.rect().getHeight());
+            System.out.println(player.rect().getWidth());
+            System.out.println("enemy");
+            System.out.println(enemyE.rect().getWidth());
+            System.out.println(enemyE.rect().getWidth());
+            System.exit(0);
+        }
 
         //Platform rendering
         for (Platform platform : platforms) {
