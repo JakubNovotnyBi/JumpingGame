@@ -22,9 +22,9 @@ import javafx.util.Duration;
 import java.io.IOException;
 import java.util.ArrayList;
 
-// TODO: ideas: moving platform,
-// TODO: need to add: gravity, fall speed, killing enemy,
-// TODO: need to fix: continuity(FPS), moving into another map, jump animation, all collision collision
+// TODO: ideas: moving platform, new enemy(image)
+// TODO: need to add/change: next map platform positions, new enemy, finish-flag/end, timer
+// TODO: need to fix: continuity(FPS), moving into another map, starting position collision
 
 
 
