@@ -14,6 +14,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -38,9 +40,19 @@ public class HelloApplication extends Application {
 
     private double speed = 20;
     private double vSpeed = 0;
+    private double enemySpeed = 10;
+
+    private double enemyLastPositionX;
+    private double enemyLastSpeed;
+
+
+    private int score = 0;
+    private byte heartsN = 3;
+
 
     private int background = 0;
     private boolean moveStage = false;
+
 
     public Rectangle rectangle;
     Image mario = new Image("mario.png");
@@ -54,7 +66,7 @@ public class HelloApplication extends Application {
 
     Image tableLand = new Image("platform.png");
 
-
+    String hearts = "♥♥♥";
 
     Image backgroundImage = new Image("background.png");
     Image backgroundImage2 = new Image("background2.png");
@@ -114,6 +126,8 @@ public class HelloApplication extends Application {
                         player.setPositionX(width - player.getImage().getWidth());
                         bgImage = backgroundImage;
                         background = 0;
+                        enemyE.setPositionX(enemyLastPositionX);
+                        enemySpeed = enemyLastSpeed;
                     }
                 }
             } else if (keyEvent.getCode() == KeyCode.D) {
@@ -136,6 +150,10 @@ public class HelloApplication extends Application {
                     player.setPositionX(0);
                     bgImage = backgroundImage2;
                     background = 1;
+                    enemyLastPositionX = enemyE.getPositionX();
+                    enemyLastSpeed = enemySpeed;
+                    enemyE.setPositionX(-1500);
+                    enemySpeed = 0;
                     }
                 }
             } else if (keyEvent.getCode() == KeyCode.W) {
@@ -205,28 +223,52 @@ public class HelloApplication extends Application {
         gc.drawImage(player.getImage(), player.getPositionX(), player.getPositionY(), player.getImage().getWidth(), player.getImage().getHeight());
         gc.drawImage(enemyE.getImage(), enemyE.getPositionX(), enemyE.getPositionY(), enemyE.getImage().getWidth(), enemyE.getImage().getHeight());
 
-        if (enemyMoving && enemyE.getPositionX() > 0){
-            if (enemyE.getImage() == enemyL) {
-                enemyE.setPositionX(enemyE.getPositionX() - 1);
-                enemyE.setImage(enemy);
-                enemyE.setImage(enemyR);
+        gc.setFont(new Font(30));
+        gc.fillText("Score " + score,30,780);
+        gc.fillText("Life "+ hearts,600, 780);
+        //gc.fillText("Life "+"heartsN",600, 780);
 
+        if (enemyE.getPositionX() > 0 && enemyE.getPositionX()+enemyE.getImage().getWidth() < width){
+            if (enemyE.getImage() == enemyL) {
+                enemyE.setPositionX(enemyE.getPositionX() - enemySpeed);
+                enemyE.setImage(enemyR);
             }
             else{
                 enemyE.setImage(enemyL);
             }
         }
         else{
-            enemyMoving = !enemyMoving;
+                enemySpeed = -enemySpeed;
+                enemyE.setPositionX(enemyE.getPositionX() - enemySpeed);
         }
 
         if (player.rect().getBoundsInParent().intersects(enemyE.rect().getBoundsInParent())){
             System.out.println(player.rect().getHeight());
             System.out.println(player.rect().getWidth());
-            System.out.println("enemy");
+
             System.out.println(enemyE.rect().getWidth());
             System.out.println(enemyE.rect().getWidth());
-            System.exit(0);
+            if (vSpeed > 2){
+                System.out.println("enemy killed");
+                score += 200;
+                enemyE.setPositionX(-1500);
+                enemySpeed = 0;
+            }
+            else{
+            heartsN--;
+            switch (heartsN){
+                case 1 -> hearts = "♥";
+                case 2 -> hearts = "♥♥";
+                case 3 -> hearts = "♥♥♥";
+                default -> hearts = " ";
+
+            }
+            enemyE.setPositionX(300);
+            player.setPositionX(0);
+                if (heartsN < 0){
+                System.exit(0);
+                }
+            }
         }
 
         //Platform rendering
